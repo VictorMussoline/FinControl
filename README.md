@@ -1,28 +1,73 @@
-# 💰 FinControl v2
+# React + TypeScript + Vite
 
-FinControl is a modern, clean, and efficient personal finance tracking application designed to help users take control of their expenses and income. 
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-This repository marks the **version 2.0** of the project, built entirely from scratch to upgrade the developer experience and system architecture.
+Currently, two official plugins are available:
 
-## 🛠️ Tech Stack & Evolution
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-- **Framework:** React (via Vite)
-- **Language:** TypeScript (Migrated from JavaScript for type safety and better DX)
-- **Styling:** Tailwind CSS (For a fully custom, utility-first UI)
-- **Backend/Database:** Supabase (Transitioning from a legacy Firebase setup to a relational PostgreSQL database)
+## React Compiler
 
-## 🏗️ Architecture & Development Strategy
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-To ensure rapid frontend development without blockers, the project uses a strict decoupled data layer:
-1. **Mocked Services First:** The app currently runs 100% locally using TypeScript interfaces and structured mock data. This allows complete UI/UX building before database integration.
-2. **Supabase Transition:** Once the interface is polished, the local service layer will be swapped with Supabase API clients without affecting the UI components.
+## Expanding the ESLint configuration
 
-## 📁 Project Structure
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```text
-src/
-├── components/     # Reusable UI components (Cards, Tables, Buttons)
-├── screens/        # Application pages (Dashboard, Analytics, etc.)
-├── types/          # Strict TypeScript definitions
-├── mocks/          # Static in-memory mock data
-└── services/       # Data-fetching layer (Simulated API delays)
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
