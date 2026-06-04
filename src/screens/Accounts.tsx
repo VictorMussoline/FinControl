@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import type { Account } from "../types/finance";
 import { financeService } from "../services/financeService";
 import { AccountModal } from "../components/AccountModal";
+import { useModal } from "../contexts/ModalContext";
 
 export const Accounts: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { showAlert, showConfirm } = useModal();
 
   const loadAccounts = async () => {
     try {
@@ -25,18 +27,20 @@ export const Accounts: React.FC = () => {
     await loadAccounts();
   };
 
-  const handleDeleteAccount = async (id: number) => {
-    if (confirm("Tem certeza que deseja excluir esta conta?")) {
+  const handleDeleteAccount = (id: number) => {
+    showConfirm("Tem certeza que deseja excluir esta conta?", async () => {
       try {
         await financeService.deleteAccount(id);
         await loadAccounts();
       } catch (error: any) {
-        alert(
+        showAlert(
           error.message ||
             "Erro ao excluir conta. Verifique se existem transações vinculadas a ela.",
+          "Erro na Exclusão",
+          true
         );
       }
-    }
+    });
   };
 
   const fmt = (val: number) =>

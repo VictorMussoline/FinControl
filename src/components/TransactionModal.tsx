@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import type { Account, Category } from "../types/finance";
+import type { Account, Category, Transaction } from "../types/finance";
 import { financeService } from "../services/financeService";
+import { useModal } from "../contexts/ModalContext";
 
 interface TransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (
     transaction: Omit<
-      import("../types/finance").Transaction,
+      Transaction,
       "id" | "category_name"
     >,
     id?: number,
   ) => Promise<void>;
   onDelete?: (id: number) => Promise<void>;
-  initialData?: import("../types/finance").Transaction | null;
+  initialData?: Transaction | null;
 }
 
 export const TransactionModal: React.FC<TransactionModalProps> = ({
@@ -29,8 +30,9 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
   const [categoryId, setCategoryId] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [accountId, setAccountId] = useState("");
-  const [isPaid, setIsPaid] = useState(true);
+  const [isPaid, setIsPaid] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { showAlert } = useModal();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -49,7 +51,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         setAmount("");
         setType("expense");
         setDate(new Date().toISOString().split("T")[0]);
-        setIsPaid(true);
+        setIsPaid(false);
         // Do not reset account/category if they already have defaults fetched,
         // they will be set correctly by the fetch logic if empty.
       }
@@ -83,13 +85,13 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     setLoading(true);
     try {
       if (!accountId) {
-        alert("Você precisa criar uma conta primeiro!");
+        showAlert("Você precisa criar uma conta primeiro!", "Atenção", true);
         setLoading(false);
         return;
       }
 
       if (!categoryId) {
-        alert("Você precisa selecionar uma categoria!");
+        showAlert("Você precisa selecionar uma categoria!", "Atenção", true);
         setLoading(false);
         return;
       }
@@ -109,7 +111,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
       onClose();
     } catch (error) {
       console.error(error);
-      alert("Erro ao salvar transação");
+      showAlert("Erro ao salvar transação", "Erro", true);
     } finally {
       setLoading(false);
     }

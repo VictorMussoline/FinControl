@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X, Calendar } from "lucide-react";
+import { useModal } from "../contexts/ModalContext";
 
 interface CustomDateModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const CustomDateModal: React.FC<CustomDateModalProps> = ({
 }) => {
   const [start, setStart] = useState(initialStart);
   const [end, setEnd] = useState(initialEnd);
+  const { showAlert } = useModal();
 
   useEffect(() => {
     if (isOpen) {
@@ -30,11 +32,11 @@ export const CustomDateModal: React.FC<CustomDateModalProps> = ({
 
   const handleApply = () => {
     if (!start || !end) {
-      alert("Por favor, selecione as duas datas.");
+      showAlert("Por favor, selecione as duas datas.", "Atenção", true);
       return;
     }
-    if (new Date(start) > new Date(end)) {
-      alert("A data inicial não pode ser maior que a data final.");
+    if (start > end) {
+      showAlert("A data inicial não pode ser maior que a data final.", "Atenção", true);
       return;
     }
     onApply(start, end);

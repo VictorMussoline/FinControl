@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import type { DashboardData } from "../types/finance";
 import { financeService } from "../services/financeService";
 import { TransactionModal } from "../components/TransactionModal";
+import { useModal } from "../contexts/ModalContext";
 
 export const Transactions: React.FC = () => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<import('../types/finance').Transaction | null>(null);
+  const [activeFilter, setActiveFilter] = useState("Todos");
+  const { showConfirm } = useModal();
 
   const loadData = () => {
     financeService.getDashboardData().then(setData);
@@ -26,11 +29,11 @@ export const Transactions: React.FC = () => {
   };
 
   const handleDeleteTransaction = async (id: number) => {
-    if (window.confirm("Tem certeza que deseja excluir esta transação?")) {
+    showConfirm("Tem certeza que deseja excluir esta transação?", async () => {
       await financeService.deleteTransaction(id);
       setIsModalOpen(false);
       loadData();
-    }
+    });
   };
 
   const handleOpenModal = (transaction: import('../types/finance').Transaction | null = null) => {
@@ -59,7 +62,8 @@ export const Transactions: React.FC = () => {
           {["Todos", "Receitas", "Despesas"].map((filter) => (
             <button
               key={filter}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === "Todos" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"}`}
+              onClick={() => setActiveFilter(filter)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeFilter === filter ? "bg-blue-600 text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"}`}
             >
               {filter}
             </button>
@@ -67,14 +71,22 @@ export const Transactions: React.FC = () => {
         </div>
 
         <div className="divide-y divide-gray-100 dark:divide-gray-800">
-          {data.transactions.length === 0 ? (
+          {data.transactions.filter(t => {
+            if (activeFilter === "Receitas") return t.type === "income";
+            if (activeFilter === "Despesas") return t.type === "expense";
+            return true;
+          }).length === 0 ? (
             <div className="p-12 flex flex-col items-center justify-center">
               <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Nenhuma transação encontrada.
+                Nenhuma transação encontrada para este filtro.
               </p>
             </div>
           ) : (
-            data.transactions.map((transaction) => (
+            data.transactions.filter(t => {
+              if (activeFilter === "Receitas") return t.type === "income";
+              if (activeFilter === "Despesas") return t.type === "expense";
+              return true;
+            }).map((transaction) => (
               <div
                 key={transaction.id}
                 onClick={() => handleOpenModal(transaction)}

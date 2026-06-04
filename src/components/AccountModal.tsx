@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useModal } from "../contexts/ModalContext";
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const [initialBalance, setInitialBalance] = useState("");
   const [color, setColor] = useState("#3B82F6");
   const [loading, setLoading] = useState(false);
+  const { showAlert } = useModal();
 
   if (!isOpen) return null;
 
@@ -37,7 +39,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       onClose();
     } catch (error) {
       console.error(error);
-      alert("Erro ao salvar conta");
+      showAlert("Erro ao salvar conta", "Erro", true);
     } finally {
       setLoading(false);
     }
