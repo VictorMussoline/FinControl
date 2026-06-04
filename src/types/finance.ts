@@ -1,16 +1,27 @@
 export interface Transaction {
-  id: string;
+  id: number;
   description: string;
   amount: number;
-  type: 'income' | 'expense';
-  category: string;
+  type: "income" | "expense";
   date: string;
+  is_paid: boolean;
+  category_id: number;
+  account_id: number;
+  category_name?: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  type: "income" | "expense";
 }
 
 export interface Account {
-  id: string;
-  nome: string;
-  valor: number;
+  id: number;
+  name: string;
+  initial_balance: number;
+  color: string;
+  balance?: number;
 }
 
 export interface ChartData {
@@ -32,4 +43,14 @@ export interface DashboardData {
   graficoReceitas: ChartData[];
   evolucaoMensal: EvolutionData[];
   transactions: Transaction[];
+}
+
+export interface AuthToken {
+  access_token: string;
+  token_type: string;
+}
+
+export interface AuthUser {
+  id: number;
+  email: string;
 }
