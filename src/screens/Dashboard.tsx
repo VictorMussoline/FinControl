@@ -6,6 +6,7 @@ import { TransactionModal } from "../components/TransactionModal";
 import { CustomDateModal } from "../components/CustomDateModal";
 import { AccountModal } from "../components/AccountModal";
 import { useModal } from "../contexts/ModalContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import {
   AreaChart,
   Area,
@@ -45,11 +46,7 @@ type Period =
   | "all_time"
   | "custom";
 
-const fmt = (val: number) =>
-  new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(val || 0);
+
 
 interface TooltipPayload {
   name: string;
@@ -68,7 +65,7 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Toolti
           className="text-md font-bold"
           style={{ color: payload[0].payload.fill }}
         >
-          {fmt(payload[0].value)}
+          {new Intl.NumberFormat(document.documentElement.lang || "pt-BR", { style: "currency", currency: document.documentElement.lang === "en" ? "USD" : document.documentElement.lang === "es" ? "EUR" : "BRL" }).format(payload[0].value || 0)}
         </p>
       </div>
     );
@@ -87,6 +84,7 @@ export const Dashboard: React.FC = () => {
   const [isCustomDateModalOpen, setIsCustomDateModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const { showConfirm, showAlert } = useModal();
+  const { formatCurrency } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -181,9 +179,26 @@ export const Dashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex h-[80vh] items-center justify-center">
-        <div className="text-xl font-semibold text-gray-500 animate-pulse">
-          Carregando FinControl...
+      <div className="animate-in fade-in duration-500 space-y-6">
+        {/* Header Skeleton */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 dark:border-gray-800 pb-4 mb-6">
+          <div className="h-10 w-48 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+          <div className="flex gap-3 w-full md:w-auto">
+            <div className="h-10 w-full sm:w-48 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse"></div>
+            <div className="h-10 w-full sm:w-48 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse"></div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Saldo Total Skeleton */}
+          <div className="h-40 rounded-xl bg-gray-200 dark:bg-gray-800 animate-pulse"></div>
+          {/* Minhas Contas Skeleton */}
+          <div className="h-40 rounded-xl bg-gray-200 dark:bg-gray-800 animate-pulse"></div>
+          {/* Pies Skeleton */}
+          <div className="h-80 rounded-xl bg-gray-200 dark:bg-gray-800 animate-pulse"></div>
+          <div className="h-80 rounded-xl bg-gray-200 dark:bg-gray-800 animate-pulse"></div>
+          {/* Area Chart Skeleton */}
+          <div className="md:col-span-2 h-96 rounded-xl bg-gray-200 dark:bg-gray-800 animate-pulse"></div>
         </div>
       </div>
     );
@@ -276,7 +291,7 @@ export const Dashboard: React.FC = () => {
             <Wallet size={20} /> Saldo Total
           </h3>
           <div className="text-4xl font-bold text-white relative z-10">
-            {fmt(data.saldoTotal)}
+            {formatCurrency(data.saldoTotal)}
           </div>
         </section>
 
@@ -305,7 +320,7 @@ export const Dashboard: React.FC = () => {
                     {conta.name}
                   </span>
                   <strong className="text-gray-900 dark:text-white">
-                    {fmt(conta.balance || 0)}
+                    {formatCurrency(conta.balance || 0)}
                   </strong>
                 </li>
               ))
@@ -420,7 +435,7 @@ export const Dashboard: React.FC = () => {
         </section>
 
         {/* 5. Evolução Mensal */}
-        <section className="md:col-span-2 relative overflow-hidden rounded-xl shadow-lg transition-shadow hover:shadow-xl dark:bg-[#1a1a2e] bg-white border border-gray-100 dark:border-gray-800">
+        <section className="md:col-span-2 relative overflow-hidden rounded-xl shadow-lg transition-shadow hover:shadow-xl dark:bg-[#1a1a2e] bg-white border border-gray-100 dark:border-gray-800 min-w-0 select-none">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-[#00D9FF] dark:to-[#00FFA3] z-10"></div>
           <div className="p-6 relative z-20">
             <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 pb-3 mb-4 flex items-center gap-2">
@@ -430,7 +445,7 @@ export const Dashboard: React.FC = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                   data={data.evolucaoMensal}
-                  margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                  margin={{ top: 5, right: 20, bottom: 5, left: 20 }}
                 >
                   <defs>
                     <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
@@ -451,10 +466,11 @@ export const Dashboard: React.FC = () => {
                     tick={{ fill: "currentColor" }}
                   />
                   <YAxis
+                    width={100}
                     stroke="currentColor"
                     className="text-gray-500 dark:text-gray-400"
                     tick={{ fill: "currentColor" }}
-                    tickFormatter={(value) => `R$ ${value}`}
+                    tickFormatter={(value) => formatCurrency(value)}
                   />
                   <RechartsTooltip
                     contentStyle={{
@@ -463,7 +479,7 @@ export const Dashboard: React.FC = () => {
                       color: "#fff",
                       borderRadius: "8px",
                     }}
-                    formatter={(value: any) => [fmt(value as number), "Saldo"]}
+                    formatter={(value: any) => [formatCurrency(value as number), "Saldo"]}
                   />
                   <Area
                     type="monotone"

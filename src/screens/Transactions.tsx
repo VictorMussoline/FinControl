@@ -13,7 +13,7 @@ export const Transactions: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const { showConfirm, showAlert } = useModal();
-  const { formatDate } = useLanguage();
+  const { formatDate, formatCurrency } = useLanguage();
 
   const loadData = () => {
     financeService.getDashboardData().then(setData);
@@ -59,7 +59,32 @@ export const Transactions: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  if (!data) return null;
+  if (!data) {
+    return (
+      <div className="animate-in fade-in duration-500 space-y-6">
+        <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4 mb-6">
+          <div className="h-10 w-48 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+          <div className="h-10 w-32 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+        </div>
+        <div className="bg-white dark:bg-[#1e1e1e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 space-y-4">
+          <div className="flex gap-4 border-b border-gray-100 dark:border-gray-800 pb-4">
+            <div className="h-10 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+            <div className="h-10 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+            <div className="h-10 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+          </div>
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex justify-between items-center py-4 border-b border-gray-100 dark:border-gray-800 last:border-0">
+              <div className="space-y-2">
+                <div className="h-5 w-48 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+                <div className="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+              </div>
+              <div className="h-6 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -136,8 +161,7 @@ export const Transactions: React.FC = () => {
                 <div
                   className={`text-lg font-semibold ${transaction.type === "income" ? "text-emerald-500" : "text-rose-500"} ${!transaction.is_paid ? "opacity-50" : ""}`}
                 >
-                  {transaction.type === "income" ? "+" : "-"} R${" "}
-                  {transaction.amount.toFixed(2)}
+                  {transaction.type === "income" ? "+" : "-"} {formatCurrency(transaction.amount)}
                 </div>
               </div>
             ))
