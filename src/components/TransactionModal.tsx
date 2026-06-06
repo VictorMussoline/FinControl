@@ -213,9 +213,14 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               </label>
               <select
                 value={type}
-                onChange={(e) =>
-                  setType(e.target.value as "income" | "expense")
-                }
+                onChange={(e) => {
+                  const newType = e.target.value as "income" | "expense";
+                  setType(newType);
+                  const validCats = categories.filter((c) => c.type === newType);
+                  if (validCats.length > 0) {
+                    setCategoryId(validCats[0].id.toString());
+                  }
+                }}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
               >
                 <option value="expense">{t("transactionModal.type.expense")}</option>

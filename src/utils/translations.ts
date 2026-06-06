@@ -135,5 +135,15 @@ export const translations: TranslationDictionary = {
   // Logout Modal
   "logoutModal.title": { "PT-BR": "Confirmar Saída", "EN-US": "Confirm Logout", "ES": "Confirmar Salida" },
   "logoutModal.msg": { "PT-BR": "Tem certeza que deseja sair do sistema?", "EN-US": "Are you sure you want to log out of the system?", "ES": "¿Está seguro de que desea salir del sistema?" },
-  "logoutModal.logout": { "PT-BR": "Sair", "EN-US": "Logout", "ES": "Salir" }
+  "logoutModal.logout": { "PT-BR": "Sair", "EN-US": "Logout", "ES": "Salir" },
+
+  // Categories
+  "category.Alimentação": { "PT-BR": "Alimentação", "EN-US": "Food", "ES": "Alimentación" },
+  "category.Moradia": { "PT-BR": "Moradia", "EN-US": "Housing", "ES": "Vivienda" },
+  "category.Transporte": { "PT-BR": "Transporte", "EN-US": "Transport", "ES": "Transporte" },
+  "category.Lazer": { "PT-BR": "Lazer", "EN-US": "Leisure", "ES": "Ocio" },
+  "category.Saúde": { "PT-BR": "Saúde", "EN-US": "Health", "ES": "Salud" },
+  "category.Salário": { "PT-BR": "Salário", "EN-US": "Salary", "ES": "Salario" },
+  "category.Investimentos": { "PT-BR": "Investimentos", "EN-US": "Investments", "ES": "Inversiones" },
+  "category.Outros": { "PT-BR": "Outros", "EN-US": "Others", "ES": "Otros" }
 };

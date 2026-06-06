@@ -155,7 +155,7 @@ export const Transactions: React.FC = () => {
                     )}
                   </div>
                   <div className="flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span>{transaction.category_name}</span>
+                    <span>{t(`category.${transaction.category_name}`) || transaction.category_name}</span>
                     <span>&bull;</span>
                     <span>
                       {formatDate(transaction.date)}

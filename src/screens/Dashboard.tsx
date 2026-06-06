@@ -206,6 +206,16 @@ export const Dashboard: React.FC = () => {
 
   if (!data) return null;
 
+  const graficoDespesasTraduzido = data.graficoDespesas.map(d => ({
+    ...d,
+    name: t(`category.${d.name}`) || d.name
+  }));
+
+  const graficoReceitasTraduzido = data.graficoReceitas.map(d => ({
+    ...d,
+    name: t(`category.${d.name}`) || d.name
+  }));
+
   return (
     <div className="animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 dark:border-gray-800 pb-4 mb-6">
@@ -342,7 +352,7 @@ export const Dashboard: React.FC = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={data.graficoDespesas}
+                    data={graficoDespesasTraduzido}
                     innerRadius={65}
                     outerRadius={90}
                     paddingAngle={4}
@@ -350,7 +360,7 @@ export const Dashboard: React.FC = () => {
                     stroke="none"
                     cornerRadius={6}
                   >
-                    {data.graficoDespesas.map((_, index) => (
+                    {graficoDespesasTraduzido.map((_, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
@@ -362,9 +372,9 @@ export const Dashboard: React.FC = () => {
               </ResponsiveContainer>
             )}
           </div>
-          {data.graficoDespesas.length > 0 && (
+          {graficoDespesasTraduzido.length > 0 && (
             <div className="flex flex-wrap gap-3 justify-center mt-4">
-              {data.graficoDespesas.map((d, i) => (
+              {graficoDespesasTraduzido.map((d, i) => (
                 <div
                   key={d.name}
                   className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400"
@@ -394,7 +404,7 @@ export const Dashboard: React.FC = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={data.graficoReceitas}
+                    data={graficoReceitasTraduzido}
                     innerRadius={65}
                     outerRadius={90}
                     paddingAngle={4}
@@ -402,7 +412,7 @@ export const Dashboard: React.FC = () => {
                     stroke="none"
                     cornerRadius={6}
                   >
-                    {data.graficoReceitas.map((_, index) => (
+                    {graficoReceitasTraduzido.map((_, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={["#00C49F", "#0088FE", "#FFBB28"][index % 3]}
@@ -414,9 +424,9 @@ export const Dashboard: React.FC = () => {
               </ResponsiveContainer>
             )}
           </div>
-          {data.graficoReceitas.length > 0 && (
+          {graficoReceitasTraduzido.length > 0 && (
             <div className="flex flex-wrap gap-3 justify-center mt-4">
-              {data.graficoReceitas.map((d, i) => (
+              {graficoReceitasTraduzido.map((d, i) => (
                 <div
                   key={d.name}
                   className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400"
