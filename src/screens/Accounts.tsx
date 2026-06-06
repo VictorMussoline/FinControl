@@ -7,6 +7,7 @@ import { useModal } from "../contexts/ModalContext";
 export const Accounts: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const { showAlert, showConfirm } = useModal();
 
   const loadAccounts = async () => {
@@ -22,25 +23,39 @@ export const Accounts: React.FC = () => {
     loadAccounts();
   }, []);
 
-  const handleSaveAccount = async (account: Omit<Account, "id">) => {
-    await financeService.createAccount(account);
-    await loadAccounts();
+  const handleSaveAccount = async (account: Omit<Account, "id">, id?: number) => {
+    try {
+      if (id) {
+        await financeService.updateAccount(id, account);
+      } else {
+        await financeService.createAccount(account);
+      }
+      await loadAccounts();
+    } catch (error: any) {
+      showAlert(error.message || "Erro ao salvar conta", "Erro", true);
+    }
   };
 
-  const handleDeleteAccount = (id: number) => {
-    showConfirm("Tem certeza que deseja excluir esta conta?", async () => {
-      try {
-        await financeService.deleteAccount(id);
-        await loadAccounts();
-      } catch (error: any) {
-        showAlert(
-          error.message ||
-            "Erro ao excluir conta. Verifique se existem transações vinculadas a ela.",
-          "Erro na Exclusão",
-          true
-        );
-      }
-    });
+  const handleDeleteAccount = (conta: Account) => {
+    showConfirm(
+      "Esta ação é IRREVERSÍVEL. Todas as transações vinculadas a esta conta também serão permanentemente excluídas.",
+      async () => {
+        try {
+          await financeService.deleteAccount(conta.id);
+          await loadAccounts();
+          showAlert(`A conta "${conta.name}" foi excluída com sucesso!`, "Sucesso", false);
+        } catch (error: any) {
+          showAlert(
+            error.message ||
+              "Erro ao excluir conta.",
+            "Erro na Exclusão",
+            true
+          );
+        }
+      },
+      "Excluir Conta e Transações?",
+      conta.name
+    );
   };
 
   const fmt = (val: number) =>
@@ -56,7 +71,10 @@ export const Accounts: React.FC = () => {
           Minhas Contas
         </h1>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setSelectedAccount(null);
+            setIsModalOpen(true);
+          }}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
         >
           Nova Conta
@@ -65,14 +83,17 @@ export const Accounts: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {accounts.length === 0 ? (
-          <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white dark:bg-[#1e1e1e] rounded-xl border border-gray-100 dark:border-gray-800 border-dashed">
+          <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md rounded-xl border border-gray-100 dark:border-gray-800 border-dashed">
             <p className="text-gray-500 dark:text-gray-400 mb-4 text-center">
               Nenhuma conta cadastrada ainda.
               <br />
               Crie sua primeira conta para começar a registrar transações.
             </p>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setSelectedAccount(null);
+                setIsModalOpen(true);
+              }}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
             >
               Criar Conta
@@ -82,24 +103,37 @@ export const Accounts: React.FC = () => {
           accounts.map((conta) => (
             <div
               key={conta.id}
-              className="bg-white dark:bg-[#1e1e1e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden"
+              className="bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden"
             >
               <div
                 className="absolute top-0 left-0 w-full h-2"
                 style={{ backgroundColor: conta.color || "#3B82F6" }}
               />
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 mt-2">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2 mt-2">
                 {conta.name}
               </h3>
+              <div className="mb-4">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+                  {conta.type === 'corrente' && '🏦 Conta Corrente'}
+                  {conta.type === 'poupança' && '🌱 Conta Poupança'}
+                  {conta.type === 'investimento' && '📈 Investimento'}
+                  {!conta.type && '🏦 Conta'}
+                </span>
+              </div>
               <div className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
                 {fmt(conta.balance || 0)}
               </div>
               <div className="flex gap-2">
-                <button className="flex-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 py-2 rounded font-medium transition-colors">
+                <button 
+                  onClick={() => {
+                    setSelectedAccount(conta);
+                    setIsModalOpen(true);
+                  }}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 py-2 rounded font-medium transition-colors">
                   Editar
                 </button>
                 <button
-                  onClick={() => handleDeleteAccount(conta.id)}
+                  onClick={() => handleDeleteAccount(conta)}
                   className="flex-1 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 py-2 rounded font-medium transition-colors"
                 >
                   Excluir
@@ -114,6 +148,7 @@ export const Accounts: React.FC = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveAccount}
+        initialData={selectedAccount}
       />
     </div>
   );

@@ -26,7 +26,7 @@ export const Layout: React.FC = () => {
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#121212] transition-colors duration-200 font-sans text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen transition-colors duration-200 font-sans text-gray-900 dark:text-gray-100">
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}

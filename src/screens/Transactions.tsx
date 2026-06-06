@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { DashboardData } from "../types/finance";
 import { financeService } from "../services/financeService";
 import { TransactionModal } from "../components/TransactionModal";
+import { AccountModal } from "../components/AccountModal";
 import { useModal } from "../contexts/ModalContext";
 
 export const Transactions: React.FC = () => {
@@ -9,7 +10,8 @@ export const Transactions: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<import('../types/finance').Transaction | null>(null);
   const [activeFilter, setActiveFilter] = useState("Todos");
-  const { showConfirm } = useModal();
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const { showConfirm, showAlert } = useModal();
 
   const loadData = () => {
     financeService.getDashboardData().then(setData);
@@ -28,6 +30,12 @@ export const Transactions: React.FC = () => {
     loadData(); // Refresh data after saving
   };
 
+  const handleSaveAccount = async (accountData: any) => {
+    await financeService.createAccount(accountData);
+    await loadData();
+    showAlert("Conta criada com sucesso!", "Sucesso", false);
+  };
+
   const handleDeleteTransaction = async (id: number) => {
     showConfirm("Tem certeza que deseja excluir esta transação?", async () => {
       await financeService.deleteTransaction(id);
@@ -37,6 +45,14 @@ export const Transactions: React.FC = () => {
   };
 
   const handleOpenModal = (transaction: import('../types/finance').Transaction | null = null) => {
+    if (!transaction && data?.contas && data.contas.length === 0) {
+      showConfirm(
+        "Você precisa de uma conta antes de adicionar transações. Deseja criar uma agora?",
+        () => setIsAccountModalOpen(true),
+        "Criar Conta"
+      );
+      return;
+    }
     setSelectedTransaction(transaction);
     setIsModalOpen(true);
   };
@@ -133,6 +149,12 @@ export const Transactions: React.FC = () => {
         onSave={handleSaveTransaction}
         onDelete={handleDeleteTransaction}
         initialData={selectedTransaction}
+      />
+
+      <AccountModal
+        isOpen={isAccountModalOpen}
+        onClose={() => setIsAccountModalOpen(false)}
+        onSave={handleSaveAccount}
       />
     </div>
   );

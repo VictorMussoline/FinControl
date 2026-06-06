@@ -5,21 +5,23 @@ import { AlertCircle, HelpCircle } from 'lucide-react';
 
 interface ModalContextType {
   showAlert: (message: string, title?: string, isError?: boolean) => void;
-  showConfirm: (message: string, onConfirm: () => void, title?: string) => void;
+  showConfirm: (message: string, onConfirm: () => void, title?: string, requireInputMatch?: string) => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const [alertConfig, setAlertConfig] = useState<{isOpen: boolean, message: string, title: string, isError: boolean}>({isOpen: false, message: '', title: '', isError: false});
-  const [confirmConfig, setConfirmConfig] = useState<{isOpen: boolean, message: string, title: string, onConfirm: () => void}>({isOpen: false, message: '', title: '', onConfirm: () => {}});
+  const [confirmConfig, setConfirmConfig] = useState<{isOpen: boolean, message: string, title: string, onConfirm: () => void, requireInputMatch?: string}>({isOpen: false, message: '', title: '', onConfirm: () => {}});
+  const [confirmInput, setConfirmInput] = useState('');
 
   const showAlert = (message: string, title = 'Aviso', isError = false) => {
     setAlertConfig({ isOpen: true, message, title, isError });
   };
 
-  const showConfirm = (message: string, onConfirm: () => void, title = 'Confirmação') => {
-    setConfirmConfig({ isOpen: true, message, title, onConfirm });
+  const showConfirm = (message: string, onConfirm: () => void, title = 'Confirmação', requireInputMatch?: string) => {
+    setConfirmConfig({ isOpen: true, message, title, onConfirm, requireInputMatch });
+    setConfirmInput('');
   };
 
   return (
@@ -58,6 +60,22 @@ export const ModalProvider: React.FC<{children: ReactNode}> = ({ children }) => 
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">{confirmConfig.title}</h3>
             </div>
             <p className="text-gray-600 dark:text-gray-400 mb-6 font-medium">{confirmConfig.message}</p>
+            
+            {confirmConfig.requireInputMatch && (
+              <div className="mb-6">
+                <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">
+                  Para confirmar, digite <strong className="text-gray-900 dark:text-white select-none">{confirmConfig.requireInputMatch}</strong> abaixo:
+                </label>
+                <input
+                  type="text"
+                  value={confirmInput}
+                  onChange={(e) => setConfirmInput(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+                  placeholder={confirmConfig.requireInputMatch}
+                />
+              </div>
+            )}
+
             <div className="flex gap-3">
               <button 
                 onClick={() => setConfirmConfig(prev => ({...prev, isOpen: false}))}
@@ -66,11 +84,12 @@ export const ModalProvider: React.FC<{children: ReactNode}> = ({ children }) => 
                 Cancelar
               </button>
               <button 
+                disabled={confirmConfig.requireInputMatch ? confirmInput !== confirmConfig.requireInputMatch : false}
                 onClick={() => {
                   confirmConfig.onConfirm();
                   setConfirmConfig(prev => ({...prev, isOpen: false}));
                 }}
-                className="flex-1 py-3 rounded-xl font-semibold text-white bg-amber-500 hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all active:scale-[0.98]"
+                className="flex-1 py-3 rounded-xl font-semibold text-white bg-amber-500 hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none"
               >
                 Confirmar
               </button>

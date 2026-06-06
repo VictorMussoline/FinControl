@@ -35,6 +35,7 @@ class CategoryCreate(CategoryBase):
 
 class AccountBase(SQLModel):
     name: str
+    type: str = Field(default="corrente")
     initial_balance: float = 0.0
     color: str = Field(default="#3B82F6")
 

@@ -43,7 +43,7 @@ export const CustomDateModal: React.FC<CustomDateModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white dark:bg-[#1e1e1e] w-full max-w-sm rounded-2xl shadow-xl p-6 relative animate-in zoom-in-95 duration-200">
         <button
           onClick={onClose}

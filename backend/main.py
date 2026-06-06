@@ -217,14 +217,14 @@ def delete_account(
     if not account or account.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Account not found")
 
-    # Check if there are transactions linked to this account
+    # Delete linked transactions to allow cascading
     linked_transactions = session.exec(
         select(Transaction).where(Transaction.account_id == account_id)
-    ).first()
-    if linked_transactions:
-        raise HTTPException(
-            status_code=400, detail="Cannot delete account with linked transactions"
-        )
+    ).all()
+    for t in linked_transactions:
+        session.delete(t)
+    
+    session.flush()
 
     session.delete(account)
     session.commit()

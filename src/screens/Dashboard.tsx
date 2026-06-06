@@ -4,6 +4,8 @@ import type { DashboardData } from "../types/finance";
 import { financeService } from "../services/financeService";
 import { TransactionModal } from "../components/TransactionModal";
 import { CustomDateModal } from "../components/CustomDateModal";
+import { AccountModal } from "../components/AccountModal";
+import { useModal } from "../contexts/ModalContext";
 import {
   AreaChart,
   Area,
@@ -58,7 +60,7 @@ interface TooltipPayload {
 const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: TooltipPayload[] }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white dark:bg-[#1e1e1e] p-3 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800">
+      <div className="bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md p-3 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800">
         <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
           {payload[0].name}
         </p>
@@ -83,6 +85,8 @@ export const Dashboard: React.FC = () => {
   const [customEnd, setCustomEnd] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isCustomDateModalOpen, setIsCustomDateModalOpen] = useState(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const { showConfirm, showAlert } = useModal();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -169,6 +173,12 @@ export const Dashboard: React.FC = () => {
     await loadData(); // Refresh data
   };
 
+  const handleSaveAccount = async (accountData: any) => {
+    await financeService.createAccount(accountData);
+    await loadData();
+    showAlert("Conta criada com sucesso!", "Sucesso", false);
+  };
+
   if (loading) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
@@ -189,11 +199,11 @@ export const Dashboard: React.FC = () => {
             Dashboard
           </h1>
         </div>
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-          <div className="relative" ref={dropdownRef}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full sm:w-auto" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 shadow-sm w-full sm:w-48 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="flex items-center justify-between gap-2 bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 shadow-sm w-full sm:w-48 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             >
               <div className="flex items-center gap-2">
                 <Calendar
@@ -211,7 +221,7 @@ export const Dashboard: React.FC = () => {
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-full sm:w-48 bg-white dark:bg-[#1e1e1e] border border-gray-100 dark:border-gray-800 rounded-lg shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full left-0 mt-2 w-full sm:w-48 bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md border border-gray-100 dark:border-gray-800 rounded-lg shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                 <ul className="py-1">
                   {Object.entries(periodLabels).map(([key, label]) => (
                     <li key={key}>
@@ -240,7 +250,17 @@ export const Dashboard: React.FC = () => {
           </div>
 
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              if (data.contas.length === 0) {
+                showConfirm(
+                  "Você precisa de uma conta antes de adicionar transações. Deseja criar uma agora?",
+                  () => setIsAccountModalOpen(true),
+                  "Criar Conta"
+                );
+              } else {
+                setIsModalOpen(true);
+              }
+            }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto"
           >
             + Adicionar Transação
@@ -261,7 +281,7 @@ export const Dashboard: React.FC = () => {
         </section>
 
         {/* 2. Minhas Contas */}
-        <section className="bg-white dark:bg-[#1e1e1e] p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
+        <section className="bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
           <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-800 pb-3 mb-4">
             <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400 flex items-center gap-2">
               <Landmark size={20} /> Minhas Contas
@@ -294,7 +314,7 @@ export const Dashboard: React.FC = () => {
         </section>
 
         {/* 3. Despesas por Categoria */}
-        <section className="bg-white dark:bg-[#1e1e1e] p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
+        <section className="bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
           <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 pb-3 mb-4 flex items-center gap-2">
             <PieChartIcon size={20} /> Despesas por Categoria
           </h3>
@@ -346,7 +366,7 @@ export const Dashboard: React.FC = () => {
         </section>
 
         {/* 4. Receitas por Categoria */}
-        <section className="bg-white dark:bg-[#1e1e1e] p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
+        <section className="bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
           <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 pb-3 mb-4 flex items-center gap-2">
             <PieChartIcon size={20} /> Receitas por Categoria
           </h3>
@@ -483,6 +503,12 @@ export const Dashboard: React.FC = () => {
         }}
         initialStart={customStart}
         initialEnd={customEnd}
+      />
+
+      <AccountModal
+        isOpen={isAccountModalOpen}
+        onClose={() => setIsAccountModalOpen(false)}
+        onSave={handleSaveAccount}
       />
     </div>
   );

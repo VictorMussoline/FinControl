@@ -10,4 +10,33 @@
 body {
   margin: 0;
   min-height: 100vh;
+  /* Soft animated mesh background for light mode */
+  background: radial-gradient(circle at 15% 50%, #fef3c7 0%, transparent 50%), 
+              radial-gradient(circle at 85% 30%, #dbeafe 0%, transparent 50%), 
+              radial-gradient(circle at 50% 80%, #fae8ff 0%, transparent 50%);
+  background-color: #f8fafc;
+  background-size: 200% 200%;
+  animation: bg-mesh 15s ease infinite;
+}
+
+.dark body {
+  /* Moody animated mesh background for dark mode */
+  background: radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), 
+              radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%), 
+              radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+  background-color: #0f172a;
+  background-size: 200% 200%;
+  animation: bg-mesh 15s ease infinite;
+}
+
+@keyframes bg-mesh {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
 }

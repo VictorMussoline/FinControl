@@ -19,6 +19,7 @@ export interface Category {
 export interface Account {
   id: number;
   name: string;
+  type: "corrente" | "poupança" | "investimento";
   initial_balance: number;
   color: string;
   balance?: number;

@@ -69,12 +69,28 @@ class FinanceService {
     return response.json();
   }
 
+  public async updateAccount(id: number, account: Omit<Account, "id">): Promise<Account> {
+    const response = await fetch(`${API_URL}/accounts/${id}`, {
+      method: "PUT",
+      headers: this.getHeaders(),
+      body: JSON.stringify(account),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || "Failed to update account");
+    }
+    return response.json();
+  }
+
   public async deleteAccount(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/accounts/${id}`, {
       method: "DELETE",
       headers: this.getHeaders(),
     });
-    if (!response.ok) throw new Error("Failed to delete account");
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || "Failed to delete account");
+    }
   }
 
   public async getCategories(): Promise<Category[]> {

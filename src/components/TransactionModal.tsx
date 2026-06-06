@@ -84,14 +84,32 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     e.preventDefault();
     setLoading(true);
     try {
+      if (!description.trim()) {
+        showAlert("A descrição é obrigatória.", "Atenção", true);
+        setLoading(false);
+        return;
+      }
+
+      if (!amount || parseFloat(amount) <= 0) {
+        showAlert("Por favor, insira um valor válido maior que zero.", "Atenção", true);
+        setLoading(false);
+        return;
+      }
+
+      if (!date) {
+        showAlert("A data da transação é obrigatória.", "Atenção", true);
+        setLoading(false);
+        return;
+      }
+
       if (!accountId) {
-        showAlert("Você precisa criar uma conta primeiro!", "Atenção", true);
+        showAlert("Por favor, selecione uma Conta de Destino/Origem.", "Atenção", true);
         setLoading(false);
         return;
       }
 
       if (!categoryId) {
-        showAlert("Você precisa selecionar uma categoria!", "Atenção", true);
+        showAlert("Por favor, selecione uma Categoria.", "Atenção", true);
         setLoading(false);
         return;
       }
@@ -118,7 +136,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white dark:bg-[#1e1e1e] w-full max-w-md rounded-2xl shadow-xl p-6 relative">
         <button
           onClick={onClose}
@@ -141,7 +159,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Descrição
