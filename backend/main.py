@@ -27,10 +27,7 @@ from auth import (
 
 app = FastAPI(title="FinControl API")
 
-origins = [
-    "http://localhost:5173",  # Vite default port
-    "http://127.0.0.1:5173",
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,

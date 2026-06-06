@@ -9,6 +9,11 @@ DATABASE_URL = os.getenv(
     "postgresql+psycopg://postgres:password@localhost:5432/fincontrol_db",
 )
 
+if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+elif DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
+
 engine = create_engine(DATABASE_URL, echo=True)
 
 
