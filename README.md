@@ -1,73 +1,121 @@
-# React + TypeScript + Vite
+# 📊 FinControl
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![FinControl Banner](https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80)
 
-Currently, two official plugins are available:
+<div align="center">
+  <p>
+    <strong>O seu dinheiro sob controle absoluto.</strong><br>
+    Um sistema completo de Gestão Financeira Pessoal com Dashboard analítico, gestão de contas, transações e suporte a múltiplos idiomas.
+  </p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+  <p>
+    <a href="#-tecnologias">Tecnologias</a> •
+    <a href="#-funcionalidades">Funcionalidades</a> •
+    <a href="#-arquitetura">Arquitetura</a> •
+    <a href="#-como-executar">Como Executar</a>
+  </p>
+</div>
 
-## React Compiler
+## 🚀 Tecnologias
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Este projeto foi desenvolvido com uma stack moderna e robusta, visando alta performance e excelente experiência de desenvolvimento (DX).
 
-## Expanding the ESLint configuration
+### Frontend
+- **React 18** com **Vite** (Build ultra-rápido)
+- **TypeScript** (Tipagem estática e segurança)
+- **Tailwind CSS** (Estilização utilitária e responsividade)
+- **Recharts** (Gráficos interativos)
+- **Lucide React** (Ícones modernos)
+- **Context API** (Gerenciamento de estado Global)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Backend
+- **Python 3.10+** com **FastAPI** (Alta performance e rotas assíncronas)
+- **SQLModel** & **SQLAlchemy** (ORM elegante e validação de dados com Pydantic)
+- **PostgreSQL** (Banco de Dados Relacional)
+- **Passlib & JWT** (Autenticação e Criptografia de senhas)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Infraestrutura & Deploy
+- **Frontend Host:** Vercel
+- **Backend Host:** Vercel (Serverless Functions)
+- **Database:** Supabase (PostgreSQL Gerenciado)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## ✨ Funcionalidades
+
+- **🔒 Autenticação Segura:** Login e Registro com JWT (JSON Web Tokens) e senhas criptografadas (bcrypt).
+- **📈 Dashboard Analítico:** Visão geral do saldo, receitas, despesas, gráficos de pizza por categoria e gráfico de evolução mensal do patrimônio.
+- **🏦 Gestão de Contas:** Criação de diferentes contas (Corrente, Poupança, Investimento) com cores personalizáveis e saldos individuais.
+- **💸 Controle de Transações:** Registro de receitas e despesas, filtro por período, classificação por categoria e status de pagamento (Pago/Pendente).
+- **🌍 Internacionalização (i18n):** Suporte nativo e instantâneo para Português (BR), Inglês (US) e Espanhol (ES).
+- **🌓 Tema Claro/Escuro:** Alternância de temas com salvamento no cache (Local Storage) e prevenção de FOUC (Flash of Unstyled Content).
+- **📱 Design Responsivo:** Interface fluida, com menu lateral retrátil e componentes que se adaptam perfeitamente a dispositivos móveis.
+- **⏳ Loading States:** Uso de Skeletons animados durante o carregamento de dados da API, evitando saltos de layout.
+
+---
+
+## 🏗 Arquitetura
+
+O projeto adota uma arquitetura **Monorepo** simplificada:
+- `/` (Root): Contém a aplicação Web em React.
+- `/backend`: Contém a API em FastAPI.
+
+A comunicação entre o cliente e o servidor ocorre via chamadas RESTful utilizando a API nativa `fetch`, com os tokens JWT trafegados via *Authorization Headers*.
+
+---
+
+## 💻 Como Executar (Ambiente de Desenvolvimento)
+
+### Pré-requisitos
+- Node.js (v18+)
+- Python (v3.10+)
+- PostgreSQL (Local ou na Nuvem, ex: Supabase)
+
+### 1. Clonando o Repositório
+```bash
+git clone https://github.com/VictorMussoline/FinControl.git
+cd FinControl
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configurando o Backend (API)
+```bash
+cd backend
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# Crie e ative um ambiente virtual
+python -m venv venv
+# No Windows:
+venv\Scripts\activate
+# No Linux/Mac:
+source venv/bin/activate
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Instale as dependências
+pip install -r requirements.txt
+
+# Crie o arquivo .env
+cp .env.example .env
+# Edite o arquivo .env com a URL do seu Banco de Dados PostgreSQL (DATABASE_URL)
+
+# Inicie o servidor local
+uvicorn main:app --reload
 ```
+A API estará rodando em: `http://localhost:8000` e a documentação interativa do Swagger em `http://localhost:8000/docs`.
+
+### 3. Configurando o Frontend (Web)
+Abra um novo terminal e volte para a raiz do projeto:
+```bash
+# Instale as dependências
+npm install
+
+# Inicie o servidor de desenvolvimento
+npm run dev
+```
+O Frontend estará rodando em: `http://localhost:5173`
+
+---
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Sinta-se à vontade para usá-lo como inspiração, estudar o código ou adaptá-lo!
+
+---
+*Desenvolvido com dedicação por Victor Mussoline.* 🚀
