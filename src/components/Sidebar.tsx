@@ -35,18 +35,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleCollapse,
 }) => {
   const navigate = useNavigate();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const [isLangModalOpen, setIsLangModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const navItems = [
-    { name: "Dashboard", path: "/", icon: <LayoutDashboard size={20} /> },
+    { name: t("sidebar.dashboard"), path: "/", icon: <LayoutDashboard size={20} /> },
     {
-      name: "Transações",
+      name: t("sidebar.transactions"),
       path: "/transactions",
       icon: <ReceiptText size={20} />,
     },
-    { name: "Contas", path: "/accounts", icon: <Wallet size={20} /> },
+    { name: t("sidebar.accounts"), path: "/accounts", icon: <Wallet size={20} /> },
   ];
 
   const handleLogout = () => {
@@ -117,12 +117,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         >
           <button
             onClick={() => setIsLangModalOpen(true)}
-            title={isDesktopCollapsed ? `Idioma: ${language}` : undefined}
+            title={isDesktopCollapsed ? `${t("sidebar.language")}: ${language}` : undefined}
             className={`flex items-center ${isDesktopCollapsed ? "justify-center p-2" : "justify-between w-full px-4 py-3"} text-gray-600 hover:bg-gray-50 rounded-lg transition-colors font-medium dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200`}
           >
             <div className="flex items-center gap-3">
               <Globe size={20} />
-              {!isDesktopCollapsed && <span>Idioma</span>}
+              {!isDesktopCollapsed && <span>{t("sidebar.language")}</span>}
             </div>
             {!isDesktopCollapsed && (
               <span className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-md">
@@ -136,23 +136,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
             title={
               isDesktopCollapsed
                 ? darkMode
-                  ? "Modo Claro"
-                  : "Modo Escuro"
+                  ? t("sidebar.lightMode")
+                  : t("sidebar.darkMode")
                 : undefined
             }
             className={`flex items-center ${isDesktopCollapsed ? "justify-center p-2" : "gap-3 w-full px-4 py-3"} text-gray-600 hover:bg-gray-50 rounded-lg transition-colors font-medium dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200`}
           >
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            {!isDesktopCollapsed && (darkMode ? "Modo Claro" : "Modo Escuro")}
+            {!isDesktopCollapsed && (darkMode ? t("sidebar.lightMode") : t("sidebar.darkMode"))}
           </button>
 
           <button
             onClick={() => setIsLogoutModalOpen(true)}
-            title={isDesktopCollapsed ? "Sair" : undefined}
+            title={isDesktopCollapsed ? t("sidebar.logout") : undefined}
             className={`flex items-center ${isDesktopCollapsed ? "justify-center p-2" : "gap-3 w-full px-4 py-3"} text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium dark:text-red-400 dark:hover:bg-red-900/20`}
           >
             <LogOut size={20} />
-            {!isDesktopCollapsed && <span>Sair</span>}
+            {!isDesktopCollapsed && <span>{t("sidebar.logout")}</span>}
           </button>
         </div>
       </aside>

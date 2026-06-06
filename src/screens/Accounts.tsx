@@ -10,7 +10,7 @@ export const Accounts: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const { showAlert, showConfirm } = useModal();
-  const { formatCurrency } = useLanguage();
+  const { formatCurrency, t } = useLanguage();
 
   const [loading, setLoading] = useState(true);
 
@@ -93,7 +93,7 @@ export const Accounts: React.FC = () => {
     <div className="space-y-6">
       <header className="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4 mb-6">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-          Minhas Contas
+          {t("accounts.title")}
         </h1>
         <button
           onClick={() => {
@@ -102,7 +102,7 @@ export const Accounts: React.FC = () => {
           }}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
         >
-          Nova Conta
+          {t("accounts.newAccount")}
         </button>
       </header>
 
@@ -110,9 +110,9 @@ export const Accounts: React.FC = () => {
         {accounts.length === 0 ? (
           <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md rounded-xl border border-gray-100 dark:border-gray-800 border-dashed">
             <p className="text-gray-500 dark:text-gray-400 mb-4 text-center">
-              Nenhuma conta cadastrada ainda.
+              {t("accounts.noAccountsYet")}
               <br />
-              Crie sua primeira conta para começar a registrar transações.
+              {t("accounts.createFirstAccount")}
             </p>
             <button
               onClick={() => {
@@ -121,7 +121,7 @@ export const Accounts: React.FC = () => {
               }}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
             >
-              Criar Conta
+              {t("accounts.createAccount")}
             </button>
           </div>
         ) : (
@@ -139,10 +139,10 @@ export const Accounts: React.FC = () => {
               </h3>
               <div className="mb-4">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
-                  {conta.type === 'corrente' && '🏦 Conta Corrente'}
-                  {conta.type === 'poupança' && '🌱 Conta Poupança'}
-                  {conta.type === 'investimento' && '📈 Investimento'}
-                  {!conta.type && '🏦 Conta'}
+                  {conta.type === 'corrente' && t("accounts.type.checking")}
+                  {conta.type === 'poupança' && t("accounts.type.savings")}
+                  {conta.type === 'investimento' && t("accounts.type.investment")}
+                  {!conta.type && t("accounts.type.default")}
                 </span>
               </div>
               <p className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -155,13 +155,13 @@ export const Accounts: React.FC = () => {
                     setIsModalOpen(true);
                   }}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 py-2 rounded font-medium transition-colors">
-                  Editar
+                  {t("accounts.edit")}
                 </button>
                 <button
                   onClick={() => handleDeleteAccount(conta)}
                   className="flex-1 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 py-2 rounded font-medium transition-colors"
                 >
-                  Excluir
+                  {t("accounts.delete")}
                 </button>
               </div>
             </div>

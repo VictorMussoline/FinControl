@@ -1,5 +1,6 @@
 import React from "react";
-import { X, Check } from "lucide-react";
+import { X } from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface LanguageModalProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ export const LanguageModal: React.FC<LanguageModalProps> = ({
   currentLanguage,
   onSelectLanguage,
 }) => {
+  const { t } = useLanguage();
+
   if (!isOpen) return null;
 
   return (
@@ -28,13 +31,13 @@ export const LanguageModal: React.FC<LanguageModalProps> = ({
         className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-xl w-full max-w-sm overflow-hidden border border-gray-100 dark:border-gray-800"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-800">
+        <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
           <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-            Selecionar Idioma
+            {t("languageModal.title")}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white transition-colors"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
           >
             <X size={24} />
           </button>
@@ -48,18 +51,21 @@ export const LanguageModal: React.FC<LanguageModalProps> = ({
                 onSelectLanguage(lang.code);
                 onClose();
               }}
-              className={`w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 ${
+              className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all ${
                 currentLanguage === lang.code
-                  ? "bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 text-blue-700 dark:text-blue-400 font-semibold"
-                  : "bg-gray-50 dark:bg-[#252525] border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-700 text-gray-700 dark:text-gray-300"
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400"
+                  : "border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{lang.flag}</span>
-                <span>{lang.name}</span>
+              <span className="text-2xl">{lang.flag}</span>
+              <div className="flex flex-col items-start">
+                <span className="font-medium">
+                  {lang.code === "PT-BR" ? t("languageModal.portuguese") : lang.code === "EN-US" ? t("languageModal.english") : t("languageModal.spanish")}
+                </span>
+                <span className="text-xs opacity-70">{lang.code}</span>
               </div>
               {currentLanguage === lang.code && (
-                <Check size={20} className="text-blue-500" />
+                <div className="ml-auto w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
               )}
             </button>
           ))}

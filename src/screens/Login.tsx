@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { financeService } from "../services/financeService";
 import { Mail, Lock, TrendingUp, ShieldCheck, PieChart, ArrowRight } from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,21 +50,21 @@ export const Login: React.FC = () => {
 
           <div className="space-y-6 max-w-lg animate-in slide-in-from-left-8 duration-1000">
             <h1 className="text-5xl font-bold leading-tight">
-              Seu dinheiro sob <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">controle absoluto</span>.
+              {t("login.slogan").split("controle absoluto")[0]}<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">controle absoluto</span>.
             </h1>
             <p className="text-lg text-gray-400 font-medium">
-              Tome decisões financeiras mais inteligentes com nossa plataforma de gestão integrada. Simples, segura e direto ao ponto.
+              {t("login.description")}
             </p>
           </div>
 
           <div className="flex items-center gap-6 text-sm text-gray-500">
             <div className="flex items-center gap-2">
               <ShieldCheck size={18} className="text-emerald-500" />
-              <span>Dados Criptografados</span>
+              <span>{t("login.encrypted")}</span>
             </div>
             <div className="flex items-center gap-2">
               <PieChart size={18} className="text-blue-500" />
-              <span>Análises Precisas</span>
+              <span>{t("login.analysis")}</span>
             </div>
           </div>
         </div>
@@ -85,10 +87,10 @@ export const Login: React.FC = () => {
             </div>
             
             <h2 className="text-3xl font-extrabold tracking-tight">
-              {isRegistering ? "Criar nova conta" : "Acesse sua conta"}
+              {isRegistering ? t("login.title.register") : t("login.title.login")}
             </h2>
             <p className="mt-2 text-gray-500 dark:text-gray-400">
-              {isRegistering ? "Preencha os dados para começar" : "Bem-vindo de volta! Sinta a tranquilidade."}
+              {isRegistering ? t("login.subtitle.register") : t("login.subtitle.login")}
             </p>
           </div>
 
@@ -105,7 +107,7 @@ export const Login: React.FC = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Email
+                    {t("login.email")}
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
@@ -124,7 +126,7 @@ export const Login: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Senha
+                    {t("login.password")}
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
@@ -151,7 +153,7 @@ export const Login: React.FC = () => {
                   <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <>
-                    {isRegistering ? "Criar Conta" : "Entrar na Plataforma"}
+                    {isRegistering ? t("login.btn.register") : t("login.btn.login")}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
@@ -161,7 +163,7 @@ export const Login: React.FC = () => {
 
           <div className="text-center">
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              {isRegistering ? "Já faz parte da nossa plataforma?" : "Ainda não tem o controle na mão?"}
+              {isRegistering ? t("login.switch.toLogin") : t("login.switch.toRegister")}
               <button
                 type="button"
                 onClick={() => {
@@ -170,7 +172,7 @@ export const Login: React.FC = () => {
                 }}
                 className="ml-2 text-blue-600 dark:text-blue-400 font-semibold hover:underline hover:text-blue-500"
               >
-                {isRegistering ? "Faça Login" : "Crie uma conta"}
+                {isRegistering ? t("login.switch.btn.toLogin") : t("login.switch.btn.toRegister")}
               </button>
             </p>
           </div>

@@ -3,6 +3,7 @@ import type { Account, Category, Transaction } from "../types/finance";
 import { financeService } from "../services/financeService";
 import { useModal } from "../contexts/ModalContext";
 import { CustomDatePicker } from "./CustomDatePicker";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
   const [isPaid, setIsPaid] = useState(false);
   const [loading, setLoading] = useState(false);
   const { showAlert } = useModal();
+  const { t } = useLanguage();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -147,7 +149,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         </button>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-            {initialData ? "Editar Transação" : "Nova Transação"}
+            {initialData ? t("transactionModal.title.edit") : t("transactionModal.title.new")}
           </h2>
           {initialData && onDelete && (
             <button
@@ -155,7 +157,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               onClick={() => onDelete(initialData.id)}
               className="text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded-md text-sm font-medium transition-colors mr-6"
             >
-              Excluir
+              {t("modal.delete")}
             </button>
           )}
         </div>
@@ -163,7 +165,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Descrição
+              {t("transactionModal.description")}
             </label>
             <input
               required
@@ -178,7 +180,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Valor
+                {t("transactionModal.amount")}
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-2 text-gray-500 dark:text-gray-400">
@@ -198,7 +200,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Data
+                {t("transactionModal.date")}
               </label>
               <CustomDatePicker value={date} onChange={setDate} />
             </div>
@@ -207,7 +209,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Tipo
+                {t("transactionModal.type")}
               </label>
               <select
                 value={type}
@@ -216,13 +218,13 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 }
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
               >
-                <option value="expense">Despesa</option>
-                <option value="income">Receita</option>
+                <option value="expense">{t("transactionModal.type.expense")}</option>
+                <option value="income">{t("transactionModal.type.income")}</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Categoria
+                {t("transactionModal.category")}
               </label>
               <select
                 value={categoryId}
@@ -241,7 +243,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
 
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Conta de Destino/Origem
+                {t("transactionModal.account")}
               </label>
               <select
                 required
@@ -250,7 +252,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
               >
                 <option value="" disabled>
-                  Selecione uma conta...
+                  {t("transactionModal.selectAccount")}
                 </option>
                 {accounts.map((acc) => (
                   <option key={acc.id} value={acc.id}>
@@ -271,8 +273,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 <div className="flex flex-col">
                   <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                     {isPaid
-                      ? "Transação Paga"
-                      : "Pendente (A pagar / A receber)"}
+                      ? t("transactionModal.status.paid")
+                      : t("transactionModal.status.unpaid")}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
                     Transações pendentes não alteram o saldo do Dashboard.
@@ -287,7 +289,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
             disabled={loading}
             className="w-full mt-6 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-colors shadow-lg hover:shadow-xl"
           >
-            {loading ? "Salvando..." : "Salvar Transação"}
+            {loading ? "..." : t("modal.save")}
           </button>
         </form>
       </div>

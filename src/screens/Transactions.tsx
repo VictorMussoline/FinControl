@@ -13,7 +13,7 @@ export const Transactions: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const { showConfirm, showAlert } = useModal();
-  const { formatDate, formatCurrency } = useLanguage();
+  const { formatDate, formatCurrency, t } = useLanguage();
 
   const loadData = () => {
     financeService.getDashboardData().then(setData);
@@ -39,7 +39,7 @@ export const Transactions: React.FC = () => {
   };
 
   const handleDeleteTransaction = async (id: number) => {
-    showConfirm("Tem certeza que deseja excluir esta transação?", async () => {
+    showConfirm(t("transactions.confirmDelete.title"), async () => {
       await financeService.deleteTransaction(id);
       setIsModalOpen(false);
       loadData();
@@ -49,9 +49,9 @@ export const Transactions: React.FC = () => {
   const handleOpenModal = (transaction: import('../types/finance').Transaction | null = null) => {
     if (!transaction && data?.contas && data.contas.length === 0) {
       showConfirm(
-        "Você precisa de uma conta antes de adicionar transações. Deseja criar uma agora?",
+        t("transactions.needAccount.msg"),
         () => setIsAccountModalOpen(true),
-        "Criar Conta"
+        t("accounts.createAccount")
       );
       return;
     }
@@ -90,25 +90,29 @@ export const Transactions: React.FC = () => {
     <div className="space-y-6">
       <header className="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4 mb-6">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-          Transações
+          {t("transactions.title")}
         </h1>
         <button
           onClick={() => handleOpenModal()}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
         >
-          Nova Transação
+          {t("transactions.newTransaction")}
         </button>
       </header>
 
       <div className="bg-white dark:bg-[#1e1e1e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
         <div className="flex gap-4 p-4 border-b border-gray-100 dark:border-gray-800 overflow-x-auto">
-          {["Todos", "Receitas", "Despesas"].map((filter) => (
+          {[
+            { key: "Todos", label: t("transactions.filter.all") },
+            { key: "Receitas", label: t("transactions.filter.incomes") },
+            { key: "Despesas", label: t("transactions.filter.expenses") }
+          ].map((filter) => (
             <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeFilter === filter ? "bg-blue-600 text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"}`}
+              key={filter.key}
+              onClick={() => setActiveFilter(filter.key)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeFilter === filter.key ? "bg-blue-600 text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"}`}
             >
-              {filter}
+              {filter.label}
             </button>
           ))}
         </div>
@@ -121,7 +125,7 @@ export const Transactions: React.FC = () => {
           }).length === 0 ? (
             <div className="p-12 flex flex-col items-center justify-center">
               <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Nenhuma transação encontrada para este filtro.
+                {t("transactions.noTransactions")}
               </p>
             </div>
           ) : (
@@ -142,11 +146,11 @@ export const Transactions: React.FC = () => {
                     </p>
                     {transaction.is_paid ? (
                       <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
-                        Pago
+                        {t("transactions.status.paid")}
                       </span>
                     ) : (
                       <span className="text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
-                        Pendente
+                        {t("transactions.status.pending")}
                       </span>
                     )}
                   </div>

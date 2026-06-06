@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-
-type Language = "PT-BR" | "EN-US" | "ES";
+import { translations } from "../utils/translations";
+import type { Language } from "../utils/translations";
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   formatDate: (dateString: string | Date) => string;
   formatCurrency: (val: number) => string;
+  t: (key: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -64,8 +65,17 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }).format(val || 0);
   };
 
+  const t = (key: string): string => {
+    const translation = translations[key];
+    if (!translation) {
+      console.warn(`Missing translation key: ${key}`);
+      return key;
+    }
+    return translation[language] || translation["PT-BR"] || key;
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, formatDate, formatCurrency }}>
+    <LanguageContext.Provider value={{ language, setLanguage, formatDate, formatCurrency, t }}>
       {children}
     </LanguageContext.Provider>
   );

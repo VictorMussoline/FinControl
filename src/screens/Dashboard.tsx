@@ -84,18 +84,18 @@ export const Dashboard: React.FC = () => {
   const [isCustomDateModalOpen, setIsCustomDateModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const { showConfirm, showAlert } = useModal();
-  const { formatCurrency } = useLanguage();
+  const { formatCurrency, t } = useLanguage();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const periodLabels: Record<Period, string> = {
-    current_month: "Mês atual",
-    last_24h: "Últimas 24h",
-    last_week: "Última semana",
-    last_month: "Último mês",
-    last_year: "Último ano",
-    all_time: "Todo o tempo",
-    custom: "Tempo específico",
+    current_month: t("dashboard.period.current_month"),
+    last_24h: t("dashboard.period.last_24h"),
+    last_week: t("dashboard.period.last_week"),
+    last_month: t("dashboard.period.last_month"),
+    last_year: t("dashboard.period.last_year"),
+    all_time: t("dashboard.period.all_time"),
+    custom: t("dashboard.period.custom"),
   };
 
   const loadData = async () => {
@@ -211,7 +211,7 @@ export const Dashboard: React.FC = () => {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 dark:border-gray-800 pb-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-            Dashboard
+            {t("dashboard.title")}
           </h1>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
@@ -268,9 +268,9 @@ export const Dashboard: React.FC = () => {
             onClick={() => {
               if (data.contas.length === 0) {
                 showConfirm(
-                  "Você precisa de uma conta antes de adicionar transações. Deseja criar uma agora?",
+                  t("transactions.needAccount.msg"),
                   () => setIsAccountModalOpen(true),
-                  "Criar Conta"
+                  t("accounts.createAccount")
                 );
               } else {
                 setIsModalOpen(true);
@@ -278,7 +278,7 @@ export const Dashboard: React.FC = () => {
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto"
           >
-            + Adicionar Transação
+            {t("dashboard.newTransaction")}
           </button>
         </div>
       </header>
@@ -288,7 +288,7 @@ export const Dashboard: React.FC = () => {
         <section className="relative overflow-hidden p-6 rounded-xl shadow-lg border border-transparent bg-gradient-to-br from-blue-600 to-indigo-800 dark:from-emerald-700 dark:to-teal-900 transition-shadow hover:shadow-xl text-white">
           <Wallet className="absolute -right-4 -bottom-4 w-32 h-32 text-white opacity-10" />
           <h3 className="text-lg font-medium text-blue-100 dark:text-emerald-100 border-b border-white/20 pb-3 mb-4 flex items-center gap-2">
-            <Wallet size={20} /> Saldo Total
+            <Wallet size={20} /> {t("dashboard.totalBalance")}
           </h3>
           <div className="text-4xl font-bold text-white relative z-10">
             {formatCurrency(data.saldoTotal)}
@@ -299,19 +299,19 @@ export const Dashboard: React.FC = () => {
         <section className="bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
           <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-800 pb-3 mb-4">
             <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400 flex items-center gap-2">
-              <Landmark size={20} /> Minhas Contas
+              <Landmark size={20} /> {t("dashboard.myAccounts")}
             </h3>
             <button
               onClick={() => navigate("/accounts")}
               className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors"
             >
-              Gerenciar
+              {t("dashboard.manage")}
             </button>
           </div>
           <ul className="divide-y divide-gray-100 dark:divide-gray-800">
             {data.contas.length === 0 ? (
               <li className="py-3 text-gray-500 text-sm text-center">
-                Nenhuma conta cadastrada.
+                {t("dashboard.noAccounts")}
               </li>
             ) : (
               data.contas.map((conta) => (
@@ -331,12 +331,12 @@ export const Dashboard: React.FC = () => {
         {/* 3. Despesas por Categoria */}
         <section className="bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
           <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 pb-3 mb-4 flex items-center gap-2">
-            <PieChartIcon size={20} /> Despesas por Categoria
+            <PieChartIcon size={20} /> {t("dashboard.expensesByCategory")}
           </h3>
           <div className="h-[250px] w-full flex justify-center items-center">
             {data.graficoDespesas.length === 0 ? (
               <p className="text-gray-500 text-sm">
-                Nenhuma despesa registrada.
+                {t("dashboard.noExpenses")}
               </p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
@@ -383,12 +383,12 @@ export const Dashboard: React.FC = () => {
         {/* 4. Receitas por Categoria */}
         <section className="bg-white/80 dark:bg-[#1e1e1e]/80 backdrop-blur-md p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 transition-shadow hover:shadow-md">
           <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 pb-3 mb-4 flex items-center gap-2">
-            <PieChartIcon size={20} /> Receitas por Categoria
+            <PieChartIcon size={20} /> {t("dashboard.incomesByCategory")}
           </h3>
           <div className="h-[250px] w-full flex justify-center items-center">
             {data.graficoReceitas.length === 0 ? (
               <p className="text-gray-500 text-sm">
-                Nenhuma receita registrada.
+                {t("dashboard.noIncomes")}
               </p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
@@ -439,7 +439,7 @@ export const Dashboard: React.FC = () => {
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-[#00D9FF] dark:to-[#00FFA3] z-10"></div>
           <div className="p-6 relative z-20">
             <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 pb-3 mb-4 flex items-center gap-2">
-              <TrendingUp size={20} /> Evolução Mensal
+              <TrendingUp size={20} /> {t("dashboard.monthlyEvolution")}
             </h3>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">

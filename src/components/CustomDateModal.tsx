@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { X, Calendar } from "lucide-react";
 import { useModal } from "../contexts/ModalContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface CustomDateModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const CustomDateModal: React.FC<CustomDateModalProps> = ({
   const [start, setStart] = useState(initialStart);
   const [end, setEnd] = useState(initialEnd);
   const { showAlert } = useModal();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (isOpen) {
@@ -54,13 +56,13 @@ export const CustomDateModal: React.FC<CustomDateModalProps> = ({
 
         <h2 className="text-xl font-bold mb-6 text-gray-800 dark:text-white flex items-center gap-2">
           <Calendar size={20} className="text-blue-500" />
-          Período Específico
+          {t("customDateModal.title")}
         </h2>
 
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Data Inicial
+              {t("customDateModal.start")}
             </label>
             <input
               type="date"
@@ -71,7 +73,7 @@ export const CustomDateModal: React.FC<CustomDateModalProps> = ({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Data Final
+              {t("customDateModal.end")}
             </label>
             <input
               type="date"
@@ -87,13 +89,13 @@ export const CustomDateModal: React.FC<CustomDateModalProps> = ({
             onClick={onClose}
             className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors"
           >
-            Cancelar
+            {t("modal.cancel")}
           </button>
           <button
             onClick={handleApply}
             className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
           >
-            Aplicar
+            {t("customDateModal.apply")}
           </button>
         </div>
       </div>
