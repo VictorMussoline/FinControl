@@ -4,6 +4,7 @@ import { financeService } from "../services/financeService";
 import { TransactionModal } from "../components/TransactionModal";
 import { AccountModal } from "../components/AccountModal";
 import { useModal } from "../contexts/ModalContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export const Transactions: React.FC = () => {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -12,6 +13,7 @@ export const Transactions: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const { showConfirm, showAlert } = useModal();
+  const { formatDate } = useLanguage();
 
   const loadData = () => {
     financeService.getDashboardData().then(setData);
@@ -127,7 +129,7 @@ export const Transactions: React.FC = () => {
                     <span>{transaction.category_name}</span>
                     <span>&bull;</span>
                     <span>
-                      {new Date(transaction.date).toLocaleDateString("pt-BR")}
+                      {formatDate(transaction.date)}
                     </span>
                   </div>
                 </div>

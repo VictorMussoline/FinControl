@@ -59,6 +59,12 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     e.preventDefault();
     setLoading(true);
     try {
+      if (!name.trim()) {
+        showAlert("O nome da conta é obrigatório.", "Atenção", true);
+        setLoading(false);
+        return;
+      }
+
       await onSave({
         name,
         type,
@@ -87,13 +93,12 @@ export const AccountModal: React.FC<AccountModalProps> = ({
           {initialData ? "Editar Conta" : "Nova Conta"}
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Nome da Conta
             </label>
             <input
-              required
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -126,7 +131,6 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                 R$
               </span>
               <input
-                required
                 type="number"
                 step="0.01"
                 value={initialBalance}

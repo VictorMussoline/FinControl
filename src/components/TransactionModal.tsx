@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { Account, Category, Transaction } from "../types/finance";
 import { financeService } from "../services/financeService";
 import { useModal } from "../contexts/ModalContext";
+import { CustomDatePicker } from "./CustomDatePicker";
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -199,13 +200,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Data
               </label>
-              <input
-                required
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-              />
+              <CustomDatePicker value={date} onChange={setDate} />
             </div>
           </div>
 

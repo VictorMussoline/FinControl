@@ -15,6 +15,7 @@ import {
 import { financeService } from "../services/financeService";
 import { LanguageModal } from "./LanguageModal";
 import { LogoutModal } from "./LogoutModal";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -34,7 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleCollapse,
 }) => {
   const navigate = useNavigate();
-  const [language, setLanguage] = useState("PT-BR");
+  const { language, setLanguage } = useLanguage();
   const [isLangModalOpen, setIsLangModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
@@ -160,7 +161,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         isOpen={isLangModalOpen}
         onClose={() => setIsLangModalOpen(false)}
         currentLanguage={language}
-        onSelectLanguage={setLanguage}
+        onSelectLanguage={(lang) => setLanguage(lang as any)}
       />
 
       <LogoutModal
